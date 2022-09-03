@@ -26,3 +26,23 @@
     .disposed(by: bag)
   }
 ```
+
+## Processing the response
+
+```swift
+  private let events = BehaviorRelay<[Event]>(value: [])
+  
+  func processEvents(_ newEvents: [Event]) {
+    var updatedEvents = newEvents + events.value
+    if updatedEvents.count > 50 {
+      updatedEvents = [Event](updatedEvents.prefix(upTo: 50)) // this way you will show only the latest activity
+    }
+    
+    events.accept(updatedEvents)
+    DispatchQueue.main.async {
+      self.tableView.reloadData()
+      self.refreshControl?.endRefreshing()
+    }
+  }
+```
+<img width="490" src="https://user-images.githubusercontent.com/47273077/188258517-564cf17b-1579-4b06-b928-8ccda648ca57.gif">
